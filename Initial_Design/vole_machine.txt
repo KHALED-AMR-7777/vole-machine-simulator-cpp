@@ -1,0 +1,87 @@
+VOLE MACHINE SIMULATOR - FULL DESCRIPTION
+
+I need you to design an object-oriented C++ simulator for a fictitious machine called the Vole machine. Please produce a UML class diagram as PlantUML code. No implementation is needed, only the design (classes, attributes, methods, and relations).
+
+==================================================
+1. THE VOLE MACHINE
+==================================================
+The Vole machine is a virtual computer with a small CPU, a main memory and a simple machine language.
+
+MAIN MEMORY
+- 256 cells, addresses 00 to FF (hex), each cell is 1 byte.
+- An instruction is 2 bytes (4 hex digits), so it takes two consecutive cells.
+- Address FF is memory-mapped to the screen: writing to FF means writing to the screen.
+
+REGISTERS
+- 16 general-purpose registers, numbered 0 to F, each 1 byte.
+
+PROGRAM COUNTER (PC)
+- Holds the address of the next instruction to fetch.
+- Set to the program's start address when a program is loaded.
+- Increased by 2 after each fetch; replaced by XY when a jump is taken.
+
+INSTRUCTION REGISTER (IR)
+- Holds the 2-byte instruction currently being executed.
+
+MACHINE CYCLE
+1. Fetch: read the 2 bytes at PC into IR, then PC = PC + 2.
+2. Decode: split IR into opcode and operands, and validate that it is a legal instruction.
+3. Execute: perform the operation.
+
+==================================================
+2. INSTRUCTION SET (only these are supported)
+==================================================
+Opcode  Operand  Description
+1       RXY      LOAD register R with the content of memory cell XY.
+2       RXY      LOAD register R with the value XY.
+3       RXY      STORE the content of register R in memory cell XY.
+3       RFF      STORE register R to address FF (the screen). Writing to FF is writing to the screen.
+4       0RS      MOVE the content of register R to register S.
+5       RST      ADD registers S and T as two's complement, result in register R.
+6       RST      ADD registers S and T as floating point, result in register R.
+7       RST      OR of registers S and T, result in register R.
+8       RST      AND of registers S and T, result in register R.
+9       RST      XOR of registers S and T, result in register R.
+A       R0X      ROTATE register R to the right X times (circular).
+B       RXY      JUMP to address XY if register R equals register 0; otherwise continue normally.
+C       000      HALT execution.
+
+Any other instruction is invalid and must be rejected.
+
+==================================================
+3. PROGRAM FILE FORMAT
+==================================================
+- Plain text file, instructions in hex written as strings.
+- Each instruction is on a separate line and is exactly 4 hex digits; the rest of the line is ignored.
+- Lines starting with ; are comments and are ignored.
+- Empty lines are ignored.
+
+Example:
+; Load 5 and 7, add them, show the result on screen
+2005
+2107
+5201
+32FF
+C000
+
+==================================================
+4. WHAT THE SIMULATOR MUST DO
+==================================================
+1. Offer a menu of choices.
+2. Load a program from a file into a specific memory location that must be an even number (00, 02, 04, ..., F0, F2, ...) less than FF.
+3. Allow the user to overwrite the content of a given register or memory cell with a new value.
+4. Set the PC to the start location of the program.
+5. Display the memory as a matrix, and the contents of the IR, the PC and the 16 registers.
+6. Fetch instructions step by step into the IR, validate each one, decode it, execute it and update the PC.
+7. Let the user choose to run the program all at once or step by step.
+8. If run at once: after the program finishes, display memory, PC, IR, the 16 registers and the screen output.
+9. If step by step: display them after each step, then wait for the user to press Enter for the next step.
+10. Then ask the user whether to exit or load another program.
+11. Reject programs that contain invalid instructions.
+
+==================================================
+5. WHAT I WANT FROM YOU
+==================================================
+- A list of classes, the responsibility of each class, suggested attributes and methods, and the relations between classes.
+- A PlantUML class diagram of the design.
+- A short explanation of why you designed it this way.
