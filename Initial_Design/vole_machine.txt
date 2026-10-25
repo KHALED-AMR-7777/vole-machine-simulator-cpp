@@ -1,7 +1,4 @@
 VOLE MACHINE SIMULATOR - FULL DESCRIPTION
-
-I need you to design an object-oriented C++ simulator for a fictitious machine called the Vole machine. Please produce a UML class diagram as PlantUML code. No implementation is needed, only the design (classes, attributes, methods, and relations).
-
 ==================================================
 1. THE VOLE MACHINE
 ==================================================
