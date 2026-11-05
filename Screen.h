@@ -9,5 +9,5 @@ public:
     void write(uint8_t value);
     void clear();
     void display();
-    void get;
+    string get;
 };
