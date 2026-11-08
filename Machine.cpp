@@ -40,10 +40,21 @@ bool Machine::runStep()
 
 bool Machine::runAll()
 {
+    int stepLimit = 10000;
+    int stepsExecuted = 0;
+    
     while (!cpu.isHalted())
     {
         if (!cpu.step(memory, screen))
             return false;
+
+        stepsExecuted++;
+        
+        if (stepsExecuted >= stepLimit)
+        {
+            cout << "Error: Execution aborted. Infinite loop detected (exceeded " << stepLimit << " steps)." << endl;
+            return false;
+        }    
     }
 
     return true;
