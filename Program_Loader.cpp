@@ -2,6 +2,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cctype>
 using namespace std;
 
 bool ProgramLoader::loadProgram(string fileName, int startAddress, Memory& memory)
@@ -47,6 +48,32 @@ bool ProgramLoader::loadProgram(string fileName, int startAddress, Memory& memor
             }
         }
 
+        char opcode = toupper(line[0]);
+        switch (opcode) {
+        case '1': case '2' : case '3': case '5': case '6': case '7': case '8': case '9': case 'B':
+        break;
+        case '4':
+        if (line[1] != '0') {
+            cout <<"invalid format"<< endl;
+            return false;
+        }
+        break;
+        case 'A':
+        if (line[2] != '0') {
+            cout <<"invalid format"<< endl; 
+            return false;
+        }
+        break;
+        case 'C':
+        if (line[1] != '0' || line[2] != '0' || line[3] != '0') {
+            cout <<"invalid format"<< endl;
+            return false;
+        }
+        break;
+        default:
+        return false;
+    }
+
         instructionCount++;
     }
 
@@ -62,7 +89,7 @@ bool ProgramLoader::loadProgram(string fileName, int startAddress, Memory& memor
         return false;
     }
 
-    if (startAddress + (instructionCount * 2) > 255)
+    if (startAddress + (instructionCount * 2) > 256)
     {
         cout << "Error: Program exceeds memory capacity!" << endl;
         return false;
