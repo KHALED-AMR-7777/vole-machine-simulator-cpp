@@ -78,3 +78,27 @@ void Machine::reset(int startAddress)
     cpu.reset(startAddress);
     screen.clear();
 }
+
+uint8_t Machine::getRegister(int index){
+    return cpu.getRegister(index);
+}
+
+uint8_t Machine::getMemory(int address) const {
+    return memory.read(address);
+}
+
+int Machine::getPC() const {
+    return cpu.getPC();
+}
+
+int Machine::getIR() const {
+    return cpu.getIR();
+}
+
+std::string Machine::getScreenOutput(){
+    return screen.get();
+}
+
+bool Machine::isHalted() const {
+    return cpu.isHalted();
+}

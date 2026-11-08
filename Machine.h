@@ -25,4 +25,10 @@ public:
     bool runAll();
     void display();
     void reset(int startAddress = 0);
+    uint8_t getRegister(int index);
+    uint8_t getMemory(int address) const;
+    int getPC() const;
+    int getIR() const;
+    std::string getScreenOutput();
+    bool isHalted() const;
 };

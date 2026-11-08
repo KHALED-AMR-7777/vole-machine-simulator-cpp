@@ -34,4 +34,7 @@ public:
     uint8_t getRegister(int index);
 
     void display();
+
+    int getPC() const;
+    int getIR() const;
 };

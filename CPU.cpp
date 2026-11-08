@@ -246,3 +246,10 @@ void CPU::display()
     cout << dec;
     registers.display();
 }
+
+int CPU::getPC() const{
+    return pc;
+}
+int CPU::getIR() const{
+    return ir;
+}
