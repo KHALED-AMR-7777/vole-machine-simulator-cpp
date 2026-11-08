@@ -1,0 +1,69 @@
+#include "Machine.h"
+#include <iostream>
+using namespace std;
+
+Machine::Machine()
+{
+    reset();
+}
+
+bool Machine::loadProgram(string fileName, int startAddress)
+{
+    Memory newMemory;
+
+    if (!loader.loadProgram(fileName, startAddress, newMemory))
+        return false;
+
+    memory = newMemory;
+    screen.clear();
+    cpu.reset(startAddress);
+    return true;
+}
+
+void Machine::setRegister(int index, uint8_t value)
+{
+    cpu.setRegister(index, value);
+}
+
+void Machine::setMemory(int address, uint8_t value)
+{
+    if (address == 255)
+        screen.write(value);
+    else
+        memory.write(address, value);
+}
+
+bool Machine::runStep()
+{
+    return cpu.step(memory, screen);
+}
+
+bool Machine::runAll()
+{
+    while (!cpu.isHalted())
+    {
+        if (!cpu.step(memory, screen))
+            return false;
+    }
+
+    return true;
+}
+
+void Machine::display()
+{
+    cout << "\n========== MACHINE STATE ==========" << endl;
+    cout << "\nCPU and Registers:" << endl;
+    cpu.display();
+    cout << "\nMemory:" << endl;
+    memory.display();
+    cout << "\nScreen:" << endl;
+    screen.display();
+    cout << "===================================" << endl;
+}
+
+void Machine::reset(int startAddress)
+{
+    memory.clear();
+    cpu.reset(startAddress);
+    screen.clear();
+}
