@@ -1,14 +1,17 @@
-#ifndef VOLE_MACHINE_SIMULATOR_CPP_MENU_H
-#define VOLE_MACHINE_SIMULATOR_CPP_MENU_H
+#pragma once
 
-#include "Machine.h"
+#include <cstdint>
+#include <string>
 
-class Menu {
+class Screen {
 private:
-    Machine machine;
+    std::string output;
 
 public:
-    void Run();
-};
+    Screen();
 
-#endif
+    void write(uint8_t value);
+    void clear();
+    void display();
+    std::string get();
+};
