@@ -2,12 +2,15 @@
 #include <cstdint>
 #include <string>
 
-class Screen{
+class Screen {
 private:
     std::string output;
+
 public:
+    Screen();
+
     void write(uint8_t value);
     void clear();
     void display();
-    string get;
+    std::string get();
 };

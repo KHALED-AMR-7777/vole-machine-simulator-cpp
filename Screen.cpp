@@ -1,29 +1,33 @@
 #include "Screen.h"
 #include <iostream>
-#include <format>
+#include <iomanip>
+#include <sstream>
 
 using namespace std;
 
-Screen::Screen(){
+Screen::Screen() {
     clear();
 }
 
-
-void Screen::write(uint8_t value){
-    output += format("{:02X} ",value);
+void Screen::write(uint8_t value) {
+    stringstream ss;
+    ss << uppercase << hex << setw(2) << setfill('0') << (int)value;
+    output += ss.str() + " ";
 }
 
-void Screen::clear(){
-    output="";
+void Screen::clear() {
+    output = "";
 }
 
-void Screen::display(){
-    if (output == ""){
-        cout<< "No output"<< endl;
+void Screen::display() {
+    if (output == "") {
+        cout << "No output" << endl;
     }
-    else cout<<"The output is: " << output << endl;
+    else {
+        cout << "The output is: " << output << endl;
+    }
 }
 
-string Screen::get(){
+string Screen::get() {
     return output;
 }
