@@ -1,14 +1,14 @@
 #pragma once
+
 #include <string>
 #include <cstdint>
+
 #include "CPU.h"
-#include "memory.h"
+#include "Memory.h"
 #include "Screen.h"
 #include "Program_Loader.h"
-using namespace std;
 
-class Machine
-{
+class Machine {
 private:
     Memory memory;
     CPU cpu;
@@ -18,7 +18,7 @@ private:
 public:
     Machine();
 
-    bool loadProgram(string fileName, int startAddress);
+    bool loadProgram(std::string fileName, int startAddress);
     void setRegister(int index, uint8_t value);
     void setMemory(int address, uint8_t value);
     bool runStep();

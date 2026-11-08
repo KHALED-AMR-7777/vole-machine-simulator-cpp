@@ -1,12 +1,11 @@
 #pragma once
+
 #include <cstdint>
 #include "Registers.h"
-#include "memory.h"
+#include "Memory.h"
 #include "Screen.h"
-using namespace std;
 
-class CPU
-{
+class CPU {
 private:
     Registers registers;
 
