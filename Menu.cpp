@@ -1,15 +1,14 @@
 #include "Menu.h"
 #include <iostream>
-#include <limits>
 #include <string>
 #include <cstdint>
+#include <cctype>
 
 using namespace std;
 
 void Menu::Run() {
-    int choice = 0;
-
-    while (true) {
+    int choice;
+    do {
         cout << "\n=========================================\n";
         cout << "       VOLE MACHINE SIMULATOR MENU       \n";
         cout << "=========================================\n";
@@ -23,129 +22,142 @@ void Menu::Run() {
         cout << "=========================================\n";
         cout << "Enter your choice (1-7): ";
 
-        if (!(cin >> choice)) {
-            cout << "[ERROR] Invalid input!\n";
+        while (!(cin >> choice) || choice < 1 || choice > 7) {
+            cout << "[ERROR] Invalid input! Please enter a valid number between 1 and 7: ";
             cin.clear();
-            cin.ignore(numeric_limits<streamsize>::max(), '\n');
-            continue;
-        }
-
-        if (choice < 1 || choice > 7) {
-            cout << "[ERROR] Please enter a number from 1 to 7.\n";
-            continue;
-        }
-
-        if (choice == 7) {
-            cout << "Exiting Vole Machine Simulator. Goodbye!\n";
-            break;
+            cin.ignore(100000000, '\n');
         }
 
         switch (choice) {
-        case 1: {
-            string fileName;
-            int startAddress;
+            case 1: {
+                cout << "\n[INFO] Load Program option selected.\n";
+                string FillName;
+                cout << "Enter the name of the file to load: ";
+                cin >> FillName;
 
-            cout << "Enter program file name: ";
-            cin >> fileName;
+                int startAddress;
+                cout << "Enter the address of the file to load: ";
+                while (!(cin >> startAddress) || startAddress < 0) {
+                    cout << "[ERROR] Invalid input! Please enter a valid address: ";
+                    cin.clear();
+                    cin.ignore(10000000, '\n');
+                }
 
-            cout << "Enter starting address (decimal): ";
-            if (!(cin >> startAddress)) {
-                cout << "[ERROR] Invalid address!\n";
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
+                if (machine.loadProgram(FillName, startAddress)) {
+                    cout << "[SUCCESS] Program loaded successfully into memory!\n";
+                } else {
+                    cout << "[ERROR] Could not open or load the file '" << FillName << "'. Please check the file name and try again.\n";
+                }
                 break;
             }
+            case 2: {
+                cout << "\n[INFO] Set Register Value Manually option selected.\n";
+                int regIndex;
+                string hexValue;
 
-            if (machine.loadProgram(fileName, startAddress)) {
-                cout << "[SUCCESS] Program loaded successfully.\n";
+                cout << "Enter register index (0-15): ";
+                while (!(cin >> regIndex) || regIndex < 0 || regIndex > 15) {
+                    cout << "[ERROR] Invalid register index! Please enter a number between 0 and 15: ";
+                    cin.clear();
+                    cin.ignore(10000000, '\n');
+                }
+
+                bool isValidHex = false;
+                while (!isValidHex) {
+                    cout << "Enter the 2-digit hex value to set (e.g., A5 or 0f): ";
+                    cin >> hexValue;
+
+                    if (hexValue.length() != 2) {
+                        cout << "[ERROR] Hex value must be exactly 2 characters long!\n";
+                        continue;
+                    }
+
+                    isValidHex = true;
+                    for (char c : hexValue) {
+                        if (!isxdigit(c)) {
+                            isValidHex = false;
+                            break;
+                        }
+                    }
+
+                    if (!isValidHex) {
+                        cout << "[ERROR] Invalid characters! Please enter valid Hex digits (0-9, A-F).\n";
+                    }
+                }
+
+                uint8_t value = static_cast<uint8_t>(stoi(hexValue, nullptr, 16));
+                machine.setRegister(regIndex, value);
+                cout << "[SUCCESS] Register R" << regIndex << " updated successfully with value 0x" << hexValue << "!\n";
+                break;
             }
-            else {
-                cout << "[ERROR] Failed to load program.\n";
+            case 3: {
+                cout << "\n[INFO] Set Memory Cell Value Manually option selected.\n";
+                int memAddress;
+                string hexValue;
+
+                cout << "Enter memory address (positive number): ";
+                while (!(cin >> memAddress) || memAddress < 0) {
+                    cout << "[ERROR] Invalid memory address! Please enter a valid positive number: ";
+                    cin.clear();
+                    cin.ignore(10000000, '\n');
+                }
+
+                bool isValidHex = false;
+                while (!isValidHex) {
+                    cout << "Enter the 2-digit hex value for this memory cell (e.g., 7F): ";
+                    cin >> hexValue;
+
+                    if (hexValue.length() != 2) {
+                        cout << "[ERROR] Hex value must be exactly 2 characters long!\n";
+                        continue;
+                    }
+
+                    isValidHex = true;
+                    for (char c : hexValue) {
+                        if (!isxdigit(c)) {
+                            isValidHex = false;
+                            break;
+                        }
+                    }
+
+                    if (!isValidHex) {
+                        cout << "[ERROR] Invalid characters! Please enter valid Hex digits (0-9, A-F).\n";
+                    }
+                }
+
+                uint8_t value = static_cast<uint8_t>(stoi(hexValue, nullptr, 16));
+                machine.setMemory(memAddress, value);
+                cout << "[SUCCESS] Memory cell at address " << memAddress << " updated successfully with 0x" << hexValue << "!\n";
+                break;
             }
-            break;
+            case 4: {
+                cout << "\n[INFO] Run Step-by-Step option selected.\n";
+                if (machine.runStep()) {
+                    cout << "[SUCCESS] Executed one step successfully.\n";
+                } else {
+                    cout << "[INFO] Program halted or execution finished.\n";
+                }
+                break;
+            }
+            case 5: {
+                cout << "\n[INFO] Run All (Batch Execution) option selected.\n";
+                if (machine.runAll()) {
+                    cout << "[SUCCESS] Program executed completely.\n";
+                } else {
+                    cout << "[ERROR] Execution stopped or encountered an issue.\n";
+                }
+                break;
+            }
+            case 6: {
+                cout << "\n[INFO] Display Machine State option selected.\n";
+                machine.display();
+                break;
+            }
+            case 7: {
+                cout << "Exiting Vole Machine Simulator. Goodbye!\n";
+                break;
+            }
         }
 
-        case 2: {
-            int index;
-            int value;
-
-            cout << "Enter register index (0-15): ";
-            if (!(cin >> index)) {
-                cout << "[ERROR] Invalid register index!\n";
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                break;
-            }
-
-            cout << "Enter value (0-255): ";
-            if (!(cin >> value)) {
-                cout << "[ERROR] Invalid value!\n";
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                break;
-            }
-
-            if (index < 0 || index > 15 || value < 0 || value > 255) {
-                cout << "[ERROR] Register index or value is out of range.\n";
-                break;
-            }
-
-            machine.setRegister(index, static_cast<uint8_t>(value));
-            cout << "[SUCCESS] Register updated.\n";
-            break;
-        }
-
-        case 3: {
-            int address;
-            int value;
-
-            cout << "Enter memory address (0-255): ";
-            if (!(cin >> address)) {
-                cout << "[ERROR] Invalid address!\n";
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                break;
-            }
-
-            cout << "Enter value (0-255): ";
-            if (!(cin >> value)) {
-                cout << "[ERROR] Invalid value!\n";
-                cin.clear();
-                cin.ignore(numeric_limits<streamsize>::max(), '\n');
-                break;
-            }
-
-            if (address < 0 || address > 255 || value < 0 || value > 255) {
-                cout << "[ERROR] Address or value is out of range.\n";
-                break;
-            }
-
-            machine.setMemory(address, static_cast<uint8_t>(value));
-            cout << "[SUCCESS] Memory updated.\n";
-            break;
-        }
-
-        case 4:
-            if (machine.runStep()) {
-                cout << "[SUCCESS] One instruction executed.\n";
-            }
-            else {
-                cout << "[INFO] No instruction executed. Check program state.\n";
-            }
-            break;
-
-        case 5:
-            if (machine.runAll()) {
-                cout << "[SUCCESS] Program execution completed.\n";
-            }
-            else {
-                cout << "[ERROR] Program execution stopped.\n";
-            }
-            break;
-
-        case 6:
-            machine.display();
-            break;
-        }
-    }
+    } while (choice != 7);
 }
