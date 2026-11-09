@@ -1,6 +1,0 @@
-; Vole Machine Test Program
-2105
-2203
-5312
-33FF
-C000
