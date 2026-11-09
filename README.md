@@ -212,11 +212,5 @@ This project was developed as a team assignment for **CS213 – Object-Oriented 
 | Yousef Sameh Abdelsamad | 20250769 |
 | Ahmed Aymen Fouad | 20250014 |
 
-**Section:** S5 / S6  
-**Team Leader:** Khaled Amr Mohamed
+**Section:** S5 / S6   Leader:** Khaled Amr Mohamed
 
-## Notes
-
-- This repository section describes the console-based Vole Machine Simulator only.
-- GUI implementation files and GUI build instructions are intentionally excluded.
-- The README describes the provided source code and its console menu; test results should be reported only after running the corresponding programs on the simulator.
