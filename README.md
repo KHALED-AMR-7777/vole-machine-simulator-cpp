@@ -212,5 +212,6 @@ This project was developed as a team assignment for **CS213 – Object-Oriented 
 | Yousef Sameh Abdelsamad | 20250769 |
 | Ahmed Aymen Fouad | 20250014 |
 
-**Section:** S5 / S6   Leader:** Khaled Amr Mohamed
+**Section:** S5 / S6  
+**Team Leader:** Khaled Amr Mohamed
 
