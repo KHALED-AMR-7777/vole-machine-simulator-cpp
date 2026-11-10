@@ -1,93 +1,119 @@
 # Vole Machine Simulator (C++)
 
-A C++ Object-Oriented Programming project that simulates the Vole Machine and executes programs written in its machine language.
+A C++ Object-Oriented Programming project that simulates the Vole
+Machine and executes machine-language programs through a graphical
+interface built with Qt.
 
-## Project Overview
+## Overview
 
-The Vole Machine Simulator provides a simple console-based environment for loading, executing, and inspecting Vole machine-language programs. It models the machine's memory, CPU, registers, and screen, and supports both step-by-step execution and running a complete program.
+The simulator models memory, registers, a CPU, and screen output. This
+README documents the full GUI application and how to run the prepared
+Windows build or rebuild it from source.
 
-This README documents the **console simulator only**. GUI files and GUI setup instructions are not included.
+## Features
 
-## Main Features
-
-- 256 memory cells, addressed from `00` to `FF`.
-- 16 general-purpose registers, named `R0` to `RF`.
-- Two-byte instructions represented by four hexadecimal digits.
-- Program loading from a text file.
-- Instruction validation before execution.
-- Fetch, Decode, and Execute processing.
-- Step-by-step execution.
-- Run-all (batch) execution.
-- Manual register and memory editing through the menu.
-- Machine-state display, including the Program Counter, Instruction Register, and register values.
-- Screen output through memory-mapped address `FF`.
-- Program halt instruction.
-
-## Machine Components
-
-The project is organized into classes, with each class responsible for a specific part of the simulator.
-
-| Class | Responsibility |
-|---|---|
-| `Machine` | Coordinates the simulator components, loads programs, controls execution, and provides access to machine state. |
-| `CPU` | Fetches, decodes, validates, and executes instructions. It maintains the Program Counter (PC), Instruction Register (IR), and registers. |
-| `Memory` | Stores the machine's 256 bytes and provides memory read, write, clear, and display operations. |
-| `Registers` | Stores and manages the 16 general-purpose registers. |
-| `Screen` | Stores and displays values written to the screen output. |
-| `ProgramLoader` | Reads a program file, checks instruction formats, and loads instructions into memory. |
-| `Menu` | Provides the console menu through which the user interacts with the simulator. |
+-   256 memory cells (`00`--`FF`), each one byte.
+-   16 general-purpose registers (`R0`--`RF`).
+-   Two-byte instructions represented by four hexadecimal digits.
+-   Load Vole programs from `.txt` files.
+-   Validate and execute instructions using the Fetch → Decode →
+    Validate → Execute cycle.
+-   Run one instruction at a time or run continuously.
+-   Adjust execution speed.
+-   Inspect the program, memory, CPU state, registers, screen output,
+    and messages.
+-   Edit memory cells and register values through the GUI.
+-   Restart execution and clear the machine.
+-   Memory-mapped screen output at address `FF`.
 
 ## Machine Specifications
 
-- **Memory size:** 256 cells.
-- **Memory address range:** `00`–`FF` (hexadecimal).
-- **Cell size:** 1 byte.
-- **Number of registers:** 16.
-- **Register range:** `R0`–`RF`.
-- **Instruction size:** 2 bytes (4 hexadecimal digits).
-- **Program Counter (PC):** Holds the address of the next instruction.
-- **Instruction Register (IR):** Holds the currently fetched instruction.
-- **Screen address:** `FF`. A store instruction targeting address `FF` sends the selected register value to the screen output.
+  Component                   Specification
+  --------------------------- ---------------------------------
+  Memory                      256 cells (`00`--`FF`)
+  Cell size                   1 byte
+  Registers                   16 (`R0`--`RF`)
+  Instruction size            2 bytes / 4 hexadecimal digits
+  Program Counter (PC)        Address of the next instruction
+  Instruction Register (IR)   Currently fetched instruction
+  Screen address              `FF`
 
-The CPU follows the **Fetch → Decode → Validate → Execute** cycle. Normally, the PC advances by two after an instruction is fetched. A jump instruction can change the PC to the specified address.
+The PC normally advances by two for each instruction. A jump instruction
+can change the PC to another address.
 
 ## Supported Instruction Set
 
-Each instruction is four hexadecimal digits:
+Each instruction contains four hexadecimal digits, commonly represented
+as `OP R X Y`.
 
-`OP R X Y`
+  -----------------------------------------------------------------------
+  Opcode                  Instruction             Description
+  ----------------------- ----------------------- -----------------------
+  `1`                     Load from memory        Loads the byte at
+                                                  address `XY` into
+                                                  register `R`.
 
-The exact meaning of the fields depends on the opcode.
+  `2`                     Load immediate          Loads hexadecimal value
+                                                  `XY` into register `R`.
 
-| Opcode | Instruction | Description |
-|---|---|---|
-| `1` | Load from memory | Loads the byte at memory address `XY` into register `R`. |
-| `2` | Load immediate | Loads the hexadecimal value `XY` directly into register `R`. |
-| `3` | Store | Stores the value in register `R` at memory address `XY`. If `XY` is `FF`, the value is sent to the screen. |
-| `4` | Move register | Copies the value of register `RX` into register `RY`. The second field must follow the instruction's required format (`0`). |
-| `5` | Integer addition | Adds the values in registers `RX` and `RY`, then stores the result in register `R`. |
-| `6` | Floating-point addition | Adds the floating-point values represented by registers `RX` and `RY`, then stores the result in register `R`. |
-| `7` | OR | Performs bitwise OR on registers `RX` and `RY`, storing the result in register `R`. |
-| `8` | AND | Performs bitwise AND on registers `RX` and `RY`, storing the result in register `R`. |
-| `9` | XOR | Performs bitwise XOR on registers `RX` and `RY`, storing the result in register `R`. |
-| `A` | Rotate right | Rotates the value in register `R` to the right by `Y` bit positions. The `X` field must be `0`. |
-| `B` | Conditional jump | If the value in register `R` equals the value in `R0`, the PC is set to address `XY`. |
-| `C` | Halt | Stops program execution. The remaining instruction fields must be zero. |
+  `3`                     Store                   Stores register `R` at
+                                                  address `XY`. Writing
+                                                  to `FF` sends the value
+                                                  to the screen.
+
+  `4`                     Move register           Copies a value between
+                                                  registers using the
+                                                  required instruction
+                                                  field format.
+
+  `5`                     Integer addition        Adds registers `RX` and
+                                                  `RY`, storing the
+                                                  result in `R`.
+
+  `6`                     Floating-point addition Adds floating-point
+                                                  values represented by
+                                                  `RX` and `RY`, storing
+                                                  the result in `R`.
+
+  `7`                     OR                      Performs bitwise OR on
+                                                  `RX` and `RY`, storing
+                                                  the result in `R`.
+
+  `8`                     AND                     Performs bitwise AND on
+                                                  `RX` and `RY`, storing
+                                                  the result in `R`.
+
+  `9`                     XOR                     Performs bitwise XOR on
+                                                  `RX` and `RY`, storing
+                                                  the result in `R`.
+
+  `A`                     Rotate right            Rotates register `R`
+                                                  right by `Y` bit
+                                                  positions.
+
+  `B`                     Conditional jump        If register `R` equals
+                                                  `R0`, jumps to address
+                                                  `XY`.
+
+  `C`                     Halt                    Stops program
+                                                  execution.
+  -----------------------------------------------------------------------
 
 ## Program File Format
 
-Programs are stored as plain text files (`.txt`).
+Programs are plain-text `.txt` files:
 
-- Write one instruction per line.
-- Each instruction must contain four hexadecimal characters (`0`–`9`, `A`–`F`).
-- Instructions are loaded into consecutive memory locations.
-- The starting address must be a valid even address.
-- A line beginning with `;` is treated as a comment by the program loader.
-- Blank lines are ignored.
+-   One instruction per line.
+-   Each instruction contains four hexadecimal characters (`0`--`9`,
+    `A`--`F`).
+-   Instructions are loaded into consecutive memory locations.
+-   Use a valid even starting address.
+-   Lines beginning with `;` are comments.
+-   Blank lines are ignored.
 
-### Example Program
+### Example
 
-```text
+``` text
 ; Load 5 into R1
 2105
 ; Load 3 into R2
@@ -100,118 +126,95 @@ Programs are stored as plain text files (`.txt`).
 C000
 ```
 
-Expected result: `R3` contains `08`, and the screen output displays `08`.
+Expected result: `R3` contains `08`, and the screen output displays
+`08`.
 
-## Requirements
+## Run the Full GUI Application (Windows)
 
-- A C++ compiler that supports C++17 or later.
-- A terminal or command prompt.
-- No external libraries are required for the console simulator.
+A ready-to-run Windows build is provided in the `build` folder.
 
-## Build Instructions
+1.  Download or copy the **entire `build` folder**.
+2.  If it is shared as a ZIP file, extract the ZIP completely.
+3.  Open the extracted `build` folder.
+4.  Double-click `vole_gui.exe`.
+5.  Keep all DLL files and Qt plugin folders together with the
+    executable. Do not move or delete individual runtime files.
 
-Compile the source files from the project directory.
+The prepared portable folder is intended to run without a separate Qt,
+MSYS2, or MinGW installation. It has been tested after being copied to
+another location on the developer's computer; testing on another Windows
+computer is still recommended.
 
-### Using g++
+### Using the GUI
 
-```bash
-g++ -std=c++17 -Wall -Wextra -Wpedantic main.cpp CPU.cpp Machine.cpp Memory.cpp Menu.cpp Program_Loader.cpp Registers.cpp Screen.cpp -o vole
+1.  Click **Open program...** and select a Vole `.txt` program.
+2.  Set the starting address if needed (default: `00`).
+3.  Click **Load**.
+4.  Click **Step** to execute one instruction, or **Run** to execute
+    continuously.
+5.  Adjust the steps-per-second slider to change execution speed.
+6.  Inspect the Program, Memory, CPU, Registers, Screen, and Messages
+    areas.
+7.  Use **Restart** to restart execution and **Clear machine** to clear
+    the machine state.
+
+## Build the GUI from Source
+
+### Requirements
+
+-   Windows.
+-   CMake and Ninja.
+-   A C++ compiler compatible with the selected Qt kit.
+-   Qt 6 development files.
+
+The development build used MSYS2 UCRT64, with Qt installed at
+`C:\msys64\ucrt64`.
+
+Run these commands from the source directory containing
+`CMakeLists.txt`:
+
+``` powershell
+cmake -S . -B build -G Ninja -DCMAKE_PREFIX_PATH=C:/msys64/ucrt64 -DCMAKE_CXX_COMPILER=C:/msys64/ucrt64/bin/g++.exe
+cmake --build build
 ```
 
-On Windows, the output executable can be named `vole.exe`:
+The GUI executable is generated in the `build` directory.
 
-```bash
-g++ -std=c++17 -Wall -Wextra -Wpedantic main.cpp CPU.cpp Machine.cpp Memory.cpp Menu.cpp Program_Loader.cpp Registers.cpp Screen.cpp -o vole.exe
-```
+### Portable Windows Folder
 
-If `g++` is not recognized, install a C++ compiler such as MinGW-w64 or MSYS2 and make sure its `bin` directory is added to the system `PATH`.
+The portable folder must include the executable, required runtime DLL
+files, and the Qt platform plugin directory (including the Windows
+platform plugin). Keep the folder structure intact.
 
-## Run the Simulator
+Qt's `windeployqt` tool can copy Qt runtime files. Additional
+compiler/runtime DLL dependencies may be required depending on the
+toolchain. Test the final folder with development-tool directories
+removed from `PATH`, and preferably on another Windows computer.
 
-On Windows:
+## Console Version
 
-```bash
-vole.exe
-```
-
-On Linux or macOS:
-
-```bash
-./vole
-```
-
-The console menu provides these options:
-
-1. **Load Program from File** — loads a text program into memory at the selected starting address.
-2. **Set Register Value Manually** — sets a register (`0`–`15`) to a two-digit hexadecimal value.
-3. **Set Memory Cell Value Manually** — writes a two-digit hexadecimal value to a memory address.
-4. **Run Step-by-Step** — executes one instruction.
-5. **Run All (Batch Execution)** — executes instructions until the program halts or execution stops.
-6. **Display Machine State** — displays the current machine state.
-7. **Exit** — closes the simulator.
-
-### Running a program
-
-1. Start the simulator.
-2. Select **Load Program from File**.
-3. Enter the program file name or path, for example `test_program.txt`.
-4. Enter a valid starting address, usually `0`.
-5. Select **Run All** to execute the program, or **Run Step-by-Step** to execute one instruction at a time.
-6. Select **Display Machine State** to inspect the registers and current CPU state.
-
-Run each test program from a clean machine state. Use the simulator's reset functionality where available, or restart the application before loading the next test.
-
-## Test Programs
-
-The repository includes `test_program.txt` as a sample input program.
-
-Additional simple Vole test programs can be placed in a separate folder, for example:
-
-```text
-Test_Programs/
-    01_add_and_display.txt
-    02_substitute_memory.txt
-    03_copy_register.txt
-    ...
-```
-
-Load and run each file separately. Record the actual output from the simulator when preparing test evidence and screenshots.
-
-## Repository Structure
-
-```text
-CS213_A2/
-├── CPU.cpp
-├── CPU.h
-├── Machine.cpp
-├── Machine.h
-├── Memory.cpp
-├── Memory.h
-├── Menu.cpp
-├── Menu.h
-├── Program_Loader.cpp
-├── Program_Loader.h
-├── Registers.cpp
-├── Registers.h
-├── Screen.cpp
-├── Screen.h
-├── main.cpp
-├── test_program.txt
-├── README.md
-└── LICENSE
-```
+If the repository also contains the console version, it is a separate
+application and may be built independently using its own source files
+and a C++17-compatible compiler. Use the GUI instructions above to run
+the full graphical application.
 
 ## Team
 
-This project was developed as a team assignment for **CS213 – Object-Oriented Programming**.
+  Team Member                 Student ID
+  ------------------------- ------------
+  Amr Emad ElDin Toukhy         20250453
+  Khaled Amr Mohamed            20250211
+  Yousef Sameh Abdelsamad       20250769
+  Ahmed Aymen Fouad             20250014
 
-| Team Member | Student ID |
-|---|---:|
-| Amr Emad ElDin Toukhy | 20250453 |
-| Khaled Amr Mohamed | 20250211 |
-| Yousef Sameh Abdelsamad | 20250769 |
-| Ahmed Aymen Fouad | 20250014 |
-
-**Section:** S5 / S6  
+**Section:** S5 / S6\
 **Team Leader:** Khaled Amr Mohamed
 
+## Notes
+
+-   Keep the portable `build` folder intact when sharing the
+    application.
+-   Use valid Vole machine-language `.txt` files.
+-   Test each sample program from a clean machine state.
+-   Include only screenshots, videos, and test results actually produced
+    by the team.
