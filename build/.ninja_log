@@ -1,0 +1,15 @@
+# ninja log v7
+23	804	8160214597247179	vole_gui_autogen/timestamp	a5d67bcc34560324
+23	804	8160214597247179	vole_gui_autogen/mocs_compilation.cpp	a5d67bcc34560324
+23	804	8160214597247179	C:/Users/Khaled/OneDrive/Desktop/CS213_A2/Source_Code/build/vole_gui_autogen/timestamp	a5d67bcc34560324
+23	804	8160214597247179	C:/Users/Khaled/OneDrive/Desktop/CS213_A2/Source_Code/build/vole_gui_autogen/mocs_compilation.cpp	a5d67bcc34560324
+845	1754	8160214598343509	CMakeFiles/vole_gui.dir/Memory.cpp.obj	ff805af8a97ab5f
+838	1756	8160214598229659	CMakeFiles/vole_gui.dir/Machine.cpp.obj	29cc6cd87344ca1
+855	1789	8160214598453512	CMakeFiles/vole_gui.dir/Program_Loader.cpp.obj	795b2c6de4eb971e
+881	1866	8160214598711661	CMakeFiles/vole_gui.dir/Registers.cpp.obj	38eb8ef08698c966
+868	1924	8160214598569312	CMakeFiles/vole_gui.dir/Screen.cpp.obj	ef9506e3a3d04710
+831	1927	8160214598199711	CMakeFiles/vole_gui.dir/CPU.cpp.obj	d57e20ba727522fb
+813	3624	8160214598019820	CMakeFiles/vole_gui.dir/vole_gui_autogen/mocs_compilation.cpp.obj	5e413d25664ce8c4
+818	3637	8160214598069787	CMakeFiles/vole_gui.dir/gui/main_gui.cpp.obj	44046131855490f5
+824	4535	8160214598129725	CMakeFiles/vole_gui.dir/gui/MainWindow.cpp.obj	76b3040b548e4573
+4536	4750	8160214635247490	vole_gui.exe	4df4a7eb226f3989

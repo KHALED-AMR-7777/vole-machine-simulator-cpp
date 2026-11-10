@@ -1,0 +1,5 @@
+C:/Users/Khaled/OneDrive/Desktop/CS213_A2/Source_Code/build/CMakeFiles/vole_gui.dir
+C:/Users/Khaled/OneDrive/Desktop/CS213_A2/Source_Code/build/CMakeFiles/edit_cache.dir
+C:/Users/Khaled/OneDrive/Desktop/CS213_A2/Source_Code/build/CMakeFiles/rebuild_cache.dir
+C:/Users/Khaled/OneDrive/Desktop/CS213_A2/Source_Code/build/CMakeFiles/vole_gui_autogen_timestamp_deps.dir
+C:/Users/Khaled/OneDrive/Desktop/CS213_A2/Source_Code/build/CMakeFiles/vole_gui_autogen.dir
